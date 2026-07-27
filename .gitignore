@@ -1,0 +1,23 @@
+# Virtual environment
+.venv/
+
+# Python-generated cache files
+__pycache__/
+*.pyc
+
+# Jupyter-generated checkpoint folders
+.ipynb_checkpoints/
+
+# Downloaded datasets
+data/raw/
+
+# Generated experiment results
+outputs/
+
+# Saved PyTorch tensors and models
+*.pt
+*.pth
+*.ckpt
+
+# File automatically created by macOS
+.DS_Store

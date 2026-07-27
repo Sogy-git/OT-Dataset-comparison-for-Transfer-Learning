@@ -1,0 +1,7 @@
+README.md
+pyproject.toml
+src/ot_select/__init__.py
+src/ot_select.egg-info/PKG-INFO
+src/ot_select.egg-info/SOURCES.txt
+src/ot_select.egg-info/dependency_links.txt
+src/ot_select.egg-info/top_level.txt

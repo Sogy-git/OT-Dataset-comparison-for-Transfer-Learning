@@ -1,20 +1,8 @@
 import torch
 import torch.nn as nn
 from model import SimpleCNN
-from supervised_train_data import train_loader, test_loader
 
-# Load hyperparameters and set device
-device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
-print(f"Using {device} device")
-lr = 0.001
-epochs = 5
-
-# Load the model, optimizer, and loss function
-model = SimpleCNN().to(device)
-optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-loss = nn.CrossEntropyLoss()
-
-# Training loop
+# Training data unction 
 def train(model, device, train_loader, optimizer, loss, epoch):
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
@@ -25,11 +13,11 @@ def train(model, device, train_loader, optimizer, loss, epoch):
         loss_value.backward()
         optimizer.step()
         
-        if batch_idx % 10 == 0:
+        if batch_idx % 100 == 0:
             print(f'Train Epoch: {epoch} [{batch_idx * len(data)}/{len(train_loader.dataset)} '
                   f'({100. * batch_idx / len(train_loader):.0f}%)]\tLoss: {loss_value.item():.6f}')
 
-# Testing loop
+# Testing data function
 def test(model, device, test_loader, loss):
     model.eval()
     test_loss = 0
@@ -46,10 +34,17 @@ def test(model, device, test_loader, loss):
     print(f'\nTest set: Average loss: {test_loss:.4f}, Accuracy: {correct}/{len(test_loader.dataset)} '
           f'({100. * correct / len(test_loader.dataset):.0f}%)\n')
 
-# Main training and testing loop
-for epoch in range(1, epochs + 1):
-    train(model, device, train_loader, optimizer, loss, epoch)
-    test(model, device, test_loader, loss)
 
-# Save the trained model
-torch.save(model.state_dict(), "simple_cnn_random.pth")
+def trainloop(type, device, lr, epoch, train_loader, test_loader):
+    # Load the model, optimizer, and loss function
+    model = SimpleCNN().to(device)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    loss = nn.CrossEntropyLoss()
+
+    # Main training and testing loop
+    for epoch in range(1, epoch + 1):
+        train(model, device, train_loader, optimizer, loss, epoch)
+        test(model, device, test_loader, loss)
+
+    # Save the trained model
+    torch.save(model.state_dict(), f"simple_cnn_{type}.pth")

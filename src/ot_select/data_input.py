@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
 # Define a random seed for reproducibility
-torch.manual_seed(42)
+torch.manual_seed(67)
 
 # Define global transformation
 transform = transforms.Compose([

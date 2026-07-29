@@ -1,5 +1,7 @@
 # ot-select
 
+*Heavily inspired by the work of David Alvarez-Melis, Nicolò Fusi (2020)*
+
 Data selection for transfer learning using small target query sets. This project studies how to pick a good subset of a *source* dataset (MNIST) for fine-tuning a model toward a *target* dataset (SEMEION handwritten digits) when only a small labeled sample of the target is available.
 
 A CNN is pretrained on MNIST, then fine-tuned on a subset of MNIST chosen by one of several selection strategies, and finally evaluated on held-out SEMEION digits.

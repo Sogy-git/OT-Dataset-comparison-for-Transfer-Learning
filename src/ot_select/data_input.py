@@ -1,38 +1,41 @@
 import torch
-from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-# Define a random seed for reproducibility
-torch.manual_seed(67)
+DEFAULT_SEED = 69
+DEFAULT_SEMEION_TRAIN_RATIO = 0.1
 
-# Define global transformation
 transform = transforms.Compose([
-
     transforms.ToTensor(),
     transforms.Normalize((0.5,), (0.5,)),
     transforms.Resize((28, 28)),
 ])
 
-# Load the MNIST dataset (60,000 training images and 10,000 test images)
-mnist_train = datasets.MNIST(root='./data', 
-                                train=True, 
-                                download=True, 
-                                transform=transform)
 
-mnist_test = datasets.MNIST(root='./data', 
-                               train=False, 
-                               download=True, 
-                               transform=transform)
+def build_datasets(seed=DEFAULT_SEED, semeion_train_ratio=DEFAULT_SEMEION_TRAIN_RATIO, data_root="./data"):
+    """Build MNIST and SEMEION datasets with a reproducible SEMEION train/test split."""
+    torch.manual_seed(seed)
 
-# Load the SEMEION dataset (1,000 training images and 1,000 test images)
-semeion_dataset = datasets.SEMEION(root='./data',
-                                        download=True,
-                                        transform=transform)
+    mnist_train = datasets.MNIST(
+        root=data_root, train=True, download=True, transform=transform,
+    )
+    mnist_test = datasets.MNIST(
+        root=data_root, train=False, download=True, transform=transform,
+    )
+    semeion_dataset = datasets.SEMEION(
+        root=data_root, download=True, transform=transform,
+    )
 
-# Split the SEMEION dataset into training and testing sets (10% training, 90% testing)
-train_size = int(0.1 * len(semeion_dataset))
-test_size = len(semeion_dataset) - train_size
+    train_size = int(semeion_train_ratio * len(semeion_dataset))
+    test_size = len(semeion_dataset) - train_size
+    semeion_train, semeion_test = torch.utils.data.random_split(
+        semeion_dataset, [train_size, test_size],
+    )
 
-semeion_train, semeion_test = torch.utils.data.random_split(
-    semeion_dataset,
-    [train_size, test_size])
+    return mnist_train, mnist_test, semeion_train, semeion_test
+
+
+# Default module-level datasets (backward compatible with existing scripts)
+mnist_train, mnist_test, semeion_train, semeion_test = build_datasets(
+    seed=DEFAULT_SEED,
+    semeion_train_ratio=DEFAULT_SEMEION_TRAIN_RATIO,
+)
